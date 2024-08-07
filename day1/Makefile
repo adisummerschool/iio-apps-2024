@@ -1,4 +1,8 @@
-hello:
-	gcc hello.c -o hello
-hello_iio:
-	gcc hello_iio.c -o hello_iio -liio
+main.o:
+	gcc -c main.c
+
+lib.o:
+	gcc -c lib.c
+
+out:
+	gcc main.o lib.o -o out
