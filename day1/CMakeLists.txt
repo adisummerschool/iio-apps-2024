@@ -1,6 +1,5 @@
-project(iio_apps)
+cmake_minimum_required(VERSION 3.10)
+project(myproj)
 
-add_executable(hello hello.c)
-add_executable(ctx_attr ctx_attr.c)
-target_link_libraries(hello iio)
-target_link_libraries(ctx_attr iio)
+add_executable(${PROJECT_NAME} main.c) 
+target_link_libraries(${PROJECT_NAME} iio)
