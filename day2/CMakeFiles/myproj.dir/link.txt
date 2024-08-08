@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/myproj.dir/main.c.o -o myproj  -liio
