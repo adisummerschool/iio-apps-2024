@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.10)
+#project(myproj)
+#project(deviceFind)
+project(tempToLed)
+
+#add_executable(${PROJECT_NAME} main.c)
+#add_executable(${PROJECT_NAME} file.c)
+add_executable(${PROJECT_NAME} temp.c)
+#add_library(mylib SHARED lib.c lib.h)
+#target_link_libraries(${PROJECT_NAME} mylib)
+target_link_libraries(${PROJECT_NAME} iio)
