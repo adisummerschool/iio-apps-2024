@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/analog/workspace/practica/iio-apps-2024/day1
+CMAKE_SOURCE_DIR = /home/analog/workspace/practica/iio-apps-2024/day2/voltage
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/analog/workspace/practica/iio-apps-2024/day1
+CMAKE_BINARY_DIR = /home/analog/workspace/practica/iio-apps-2024/day2/voltage
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day1/CMakeFiles /home/analog/workspace/practica/iio-apps-2024/day1//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day2/voltage/CMakeFiles /home/analog/workspace/practica/iio-apps-2024/day2/voltage//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day1/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day2/voltage/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,29 +129,29 @@ myproj/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/build
 .PHONY : myproj/fast
 
-main.o: main.c.o
-.PHONY : main.o
+main1.o: main1.c.o
+.PHONY : main1.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main.c.o
-.PHONY : main.c.o
+main1.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main1.c.o
+.PHONY : main1.c.o
 
-main.i: main.c.i
-.PHONY : main.i
+main1.i: main1.c.i
+.PHONY : main1.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main.c.i
-.PHONY : main.c.i
+main1.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main1.c.i
+.PHONY : main1.c.i
 
-main.s: main.c.s
-.PHONY : main.s
+main1.s: main1.c.s
+.PHONY : main1.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main.c.s
-.PHONY : main.c.s
+main1.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main1.c.s
+.PHONY : main1.c.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... myproj"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... main1.o"
+	@echo "... main1.i"
+	@echo "... main1.s"
 .PHONY : help
 
 
