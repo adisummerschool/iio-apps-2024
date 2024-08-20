@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <iio.h>
-#define CHANNEL_NAME 			"ch0"
 #define URI 					"ip:10.76.84.253"
 #define DEVICE_NAME 			"ad5592rs"
 #define ATTR_NAME				"raw"
