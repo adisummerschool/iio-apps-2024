@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/analog/workspace/practica/iio-apps-2024/day1/build",
+  "command": "/usr/bin/cc   -g -o CMakeFiles/myproj.dir/main.c.o -c /home/analog/workspace/practica/iio-apps-2024/day1/main.c",
+  "file": "/home/analog/workspace/practica/iio-apps-2024/day1/main.c",
+  "output": "CMakeFiles/myproj.dir/main.c.o"
+}
+]

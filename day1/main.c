@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iio.h>
 #include <unistd.h>
-#define URI "ip:10.76.84.108"
+#define URI "ip:10.76.84.103"
 #define DEVICE_NAME "iio:device0"
 #define CHANNEL_NAME "voltage0"
 #define ATTRIBUTE_NAME "raw"
