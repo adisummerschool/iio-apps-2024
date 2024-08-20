@@ -48,12 +48,14 @@ int main()
         char chan_data[CHANS_NB][20];
         int chan_raw[CHANS_NB];
         double chan_voltage[CHANS_NB];
+        double chan_g_values[CHANS_NB];
 
         for (int i = 0; i < CHANS_NB; i++)
         {
             iio_channel_attr_read(chans[i], attr_name, chan_data[i], sizeof(chan_data[i]));
             chan_raw[i] = atoi(chan_data[i]);
             chan_voltage[i] = chan_raw[i] * VOLT_PER_LSB;
+            chan_g_values[i] = chan_raw[i] / (MAX_ADC * 1.0);
         }
 
         printf("     raw: ");
@@ -67,6 +69,13 @@ int main()
         for (int i = 0; i < CHANS_NB; i++)
         {
             printf("%7.4fV ", chan_voltage[i]);
+        }
+
+        printf("\n");
+        printf("   accel:\n");
+        for (int i = 0; i < CHANS_NB; i++)
+        {
+            printf("           %fg\n", chan_g_values[i]);
         }
         printf("\n----------------------------------------------------------------\n");
         sleep(1);
