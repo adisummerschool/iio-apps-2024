@@ -34,7 +34,7 @@ int main() {
     	scanf("%d", &mode); 
     	
     	if (mode != 1 && mode != 2) {
-	    printf("Invalid mode selected\nExiting...");
+	    printf("Invalid mode selected\nExiting...\n");
 	    return -1;
 	}
     	
@@ -44,11 +44,13 @@ int main() {
 
         if(!ctx) {
                 printf("%s\n", "Cannot get ctx");
+                return -1;
         }
 
     	struct iio_device* dev = iio_context_find_device(ctx, DEVICE);
     	if(!dev) {
-    		printf("%s\n", "Cannot get ADC device");    		
+    		printf("%s\n", "Cannot get ADC device");  
+    		return -1;  		
     	}
     	
     	//enabling the ADC
@@ -140,7 +142,7 @@ int main() {
 	    		for (int j = 0; j < 6; j++) {    	
 		    		if (val[j] - init_raw_int[j] >= SHOCK) {
 		    			dif = val[j] - init_raw_int[j];
-		    			printf("Shock on %s axis = %.2fg\n", axis_names[j], (float)dif/G);
+		    			printf("Shock on %s axis = %.2f [g]\n", axis_names[j], (float)dif/G);
 		    			printf("Recalibrate!\n");
 		    			sleep(5);
 		    			for (int i = 0; i < 6; i++) {
