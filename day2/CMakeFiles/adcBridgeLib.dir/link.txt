@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC -g -shared -Wl,-soname,libadcBridgeLib.so -o libadcBridgeLib.so CMakeFiles/adcBridgeLib.dir/adcBridge.c.o

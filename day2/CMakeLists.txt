@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.10)
+project(FPGAtempHandler)
+add_executable(${PROJECT_NAME} main.c)
+add_library(findMyDevice SHARED findDev.c findDev.h)
+add_library(tempLib SHARED temp.c temp.h)
+add_library(ledBridgeLib SHARED ledBridge.c ledBridge.h)
+add_library(adcBridgeLib SHARED adcBridge.c adcBridge.h)
+add_library(adcToLedBridgeLib SHARED adcToLedBridge.c adcToLedBridge.h)
+target_link_libraries(${PROJECT_NAME} tempLib)
+target_link_libraries(${PROJECT_NAME} findMyDevice)
+target_link_libraries(${PROJECT_NAME} ledBridgeLib)
+target_link_libraries(${PROJECT_NAME} adcBridgeLib)
+target_link_libraries(${PROJECT_NAME} adcToLedBridgeLib)
+target_link_libraries(${PROJECT_NAME} iio)
+
+

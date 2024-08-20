@@ -1,0 +1,8 @@
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/FPGAtempHandler.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/findMyDevice.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/tempLib.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/ledBridgeLib.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/adcBridgeLib.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/adcToLedBridgeLib.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/edit_cache.dir
+/home/analog/workspace/practica/iio-apps-2024/day2/CMakeFiles/rebuild_cache.dir

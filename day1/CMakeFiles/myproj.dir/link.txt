@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/myproj.dir/main.c.o -o myproj  -Wl,-rpath,/home/analog/workspace/practica/iio-apps-2024/day1 libmylib.so -liio

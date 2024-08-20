@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/analog/workspace/practica/iio-apps-2024/day1
+CMAKE_SOURCE_DIR = /home/analog/workspace/practica/iio-apps-2024/day3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/analog/workspace/practica/iio-apps-2024/day1
+CMAKE_BINARY_DIR = /home/analog/workspace/practica/iio-apps-2024/day3/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day1/CMakeFiles /home/analog/workspace/practica/iio-apps-2024/day1//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day3/build/CMakeFiles /home/analog/workspace/practica/iio-apps-2024/day3/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day1/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/analog/workspace/practica/iio-apps-2024/day3/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -117,61 +117,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named myproj
+# Target rules for targets named day3
 
 # Build rule for target.
-myproj: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 myproj
-.PHONY : myproj
+day3: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 day3
+.PHONY : day3
 
 # fast build rule for target.
-myproj/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/build
-.PHONY : myproj/fast
-
-#=============================================================================
-# Target rules for targets named mylib
-
-# Build rule for target.
-mylib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mylib
-.PHONY : mylib
-
-# fast build rule for target.
-mylib/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/build
-.PHONY : mylib/fast
-
-li.o: li.c.o
-.PHONY : li.o
-
-# target to build an object file
-li.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/li.c.o
-.PHONY : li.c.o
-
-li.i: li.c.i
-.PHONY : li.i
-
-# target to preprocess a source file
-li.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/li.c.i
-.PHONY : li.c.i
-
-li.s: li.c.s
-.PHONY : li.s
-
-# target to generate assembly for a file
-li.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/mylib.dir/build.make CMakeFiles/mylib.dir/li.c.s
-.PHONY : li.c.s
+day3/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/day3.dir/build.make CMakeFiles/day3.dir/build
+.PHONY : day3/fast
 
 main.o: main.c.o
 .PHONY : main.o
 
 # target to build an object file
 main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/day3.dir/build.make CMakeFiles/day3.dir/main.c.o
 .PHONY : main.c.o
 
 main.i: main.c.i
@@ -179,7 +142,7 @@ main.i: main.c.i
 
 # target to preprocess a source file
 main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/day3.dir/build.make CMakeFiles/day3.dir/main.c.i
 .PHONY : main.c.i
 
 main.s: main.c.s
@@ -187,7 +150,7 @@ main.s: main.c.s
 
 # target to generate assembly for a file
 main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/myproj.dir/build.make CMakeFiles/myproj.dir/main.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/day3.dir/build.make CMakeFiles/day3.dir/main.c.s
 .PHONY : main.c.s
 
 # Help Target
@@ -198,11 +161,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... mylib"
-	@echo "... myproj"
-	@echo "... li.o"
-	@echo "... li.i"
-	@echo "... li.s"
+	@echo "... day3"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

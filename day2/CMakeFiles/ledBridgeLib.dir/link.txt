@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC -g -shared -Wl,-soname,libledBridgeLib.so -o libledBridgeLib.so CMakeFiles/ledBridgeLib.dir/ledBridge.c.o

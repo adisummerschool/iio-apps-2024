@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/FPGAtempHandler.dir/main.c.o -o FPGAtempHandler  -Wl,-rpath,/home/analog/workspace/practica/iio-apps-2024/day2 libtempLib.so libfindMyDevice.so libledBridgeLib.so libadcBridgeLib.so libadcToLedBridgeLib.so -liio

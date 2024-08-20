@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC -g -shared -Wl,-soname,libtempLib.so -o libtempLib.so CMakeFiles/tempLib.dir/temp.c.o
