@@ -8,18 +8,28 @@
 #define THRESHOLD 25
 #define SHOCK 500
 #define G 2000
+#define DEVICE "ad5592r_s"
 
 
 int main() {
- 	struct iio_context *ctx;
+    	//mode selection
+    	int mode = 0;
+    	printf("Choose mode:\n  1 -> board calibration\n  2 -> shock detection\n");
+    	scanf("%d", &mode); 
+    	
+    	if (mode != 1 && mode != 2) {
+	    printf("Invalid mode selected\nExiting...");
+	    return -1;
+	}
+    	
+    	struct iio_context *ctx;
         ctx = iio_create_context_from_uri(URI);
 
         if(!ctx) {
                 printf("%s\n", "Cannot get ctx");
         }
 
-
-    	struct iio_device* dev = iio_context_find_device(ctx, "ad5592r_s");
+    	struct iio_device* dev = iio_context_find_device(ctx, DEVICE);
     	if(!dev) {
     		printf("%s\n", "Cannot get ADC device");    		
     	}
@@ -28,182 +38,133 @@ int main() {
     	iio_device_attr_write(dev, EN, "1");
     	
     	//running averages 
-    	long sum[6] = {0, 0, 0, 0, 0, 0};
-    	int numReads = 0;
-    	
+    	long avg[6] = {0, 0, 0, 0, 0, 0};
     	
     	//continuously reading the channel values
     	while(true) {
-    		printf("Calibrating...\n\n");
+    		char *chan_name[6] = {"voltage0",
+    					"voltage1", 
+    					"voltage2",
+    					"voltage3",
+    					"voltage4",
+    					"voltage5"};
     	
-	    	char value0[10] = "0";
-	    	char value1[10] = "0";
-	    	char value2[10] = "0";
-	    	char value3[10] = "0";
-	    	char value4[10] = "0";
-	    	char value5[10] = "0";
+	    	char value[6][10] = {"0", "0", "0", "0", "0", "0"};
+	    	struct iio_channel* voltage[6];
+	    	int val[6];
 	    	
-	    	//x+
-	    	struct iio_channel* voltage0 = iio_device_find_channel(dev, "voltage0", NULL);
-	    	iio_channel_attr_read(voltage0, CHAN_ATTR, value0, 10);   	
-	    	//x-
-	    	struct iio_channel* voltage1 = iio_device_find_channel(dev, "voltage1", NULL);
-	    	iio_channel_attr_read(voltage1, CHAN_ATTR, value1, 10);
-	    	//y+
-	    	struct iio_channel* voltage2 = iio_device_find_channel(dev, "voltage2", NULL);
-	    	iio_channel_attr_read(voltage2, CHAN_ATTR, value2, 10);
-	    	//y-
-	    	struct iio_channel* voltage3 = iio_device_find_channel(dev, "voltage3", NULL);
-	    	iio_channel_attr_read(voltage3, CHAN_ATTR, value3, 10);
-	    	//z+
-	    	struct iio_channel* voltage4 = iio_device_find_channel(dev, "voltage4", NULL);
-	    	iio_channel_attr_read(voltage4, CHAN_ATTR, value4, 10);
-	    	//z-
-	    	struct iio_channel* voltage5 = iio_device_find_channel(dev, "voltage5", NULL);
-	    	iio_channel_attr_read(voltage5, CHAN_ATTR, value5, 10);
-	    	
-	    	printf("Voltage0 channel raw value = %s\n", value0);
-	    	printf("Voltage1 channel raw value = %s\n", value1);
-	    	printf("Voltage2 channel raw value = %s\n", value2);
-	    	printf("Voltage3 channel raw value = %s\n", value3);
-	    	printf("Voltage4 channel raw value = %s\n", value4);
-	    	printf("Voltage5 channel raw value = %s\n", value5);
+	    	for (int i = 0; i < 6; i++) {
+	    		voltage[i] = iio_device_find_channel(dev, chan_name[i], NULL);
+	    		iio_channel_attr_read(voltage[i], CHAN_ATTR, value[i], 10);  
+	    		val[i] = atoi(value[i]);
+	    		printf("%s channel raw value = %s\n", chan_name[i], value[i]);
+	    	}
 	    	
 	    	printf("\n\n");
 	    	
-	    	int val0 = atoi(value0);
-	    	int val1 = atoi(value1);
-	    	int val2 = atoi(value2);
-	    	int val3 = atoi(value3);
-	    	int val4 = atoi(value4);
-	    	int val5 = atoi(value5);
-	    	
-	    	/*
-	    	if (val0 < THRESHOLD && val1 < THRESHOLD) {
-	    		printf("X axis OK\n");
-	    	}
-	    	if (val0 > THRESHOLD) {
-			printf("Turn right X potentiometer\n");
-		}
-	    	if (val1 > THRESHOLD) {
-	    		printf("Turn left X potentiometer\n");
-	    	}
-	    	
-	    	if (val2 < THRESHOLD && val3 < THRESHOLD) {
-	    		printf("Y axis OK\n");
-	    	}
-	    	if (val2 > THRESHOLD) {
-			printf("Turn right Y potentiometer\n");
-		}
-	    	if (val3 > THRESHOLD) {
-	    		printf("Turn left Y potentiometer\n");
-	    	}
-	    	
-	    	if (val4 < THRESHOLD && val5 < THRESHOLD) {
-	    		printf("Z axis OK\n");
-	    	}
-	    	if (val4 > THRESHOLD) {
-			printf("Turn right Z potentiometer\n");
-		}
-	    	if (val5 > THRESHOLD) {
-	    		printf("Turn left Z potentiometer\n");
-	    	}
-	    	*/
-	    	
-	    	sum[0] += val0;
-	    	sum[1] += val1;
-	    	sum[2] += val2;
-	    	sum[3] += val3;
-	    	sum[4] += val4;
-	    	sum[5] += val5;
-	    	numReads++;
-	    	
-	    	int dif;
-	    	
-	    	if ((val0 > sum[0]/numReads + SHOCK)) {
-	    		dif = val0 - (sum[0]/numReads + SHOCK);
-	    		printf("Shock on X+ axis = %.2fg\n", (float)dif/G);
-	    		sum[0] -= val0;
-	    		sum[0] += sum[0]/numReads;
-	    	}
-	    	else if ((val0 < sum[0]/numReads - SHOCK)) {
-	    		dif = (sum[0]/numReads - SHOCK) - val0;
-	    		printf("Shock on X+ axis = %.2fg\n", (float)dif/G);
-	    		sum[0] -= val0;
-	    		sum[0] += sum[0]/numReads;
-	    	}
-	    	else if ((val1 > sum[1]/numReads + SHOCK)) {
-	    		dif = val1 - (sum[1]/numReads + SHOCK);
-	    		printf("Shock on X- axis = %.2fg\n", (float)dif/G);
-	    		sum[1] -= val1;
-	    		sum[1] += sum[1]/numReads;
-	    	}
-	    	else if ((val1 < sum[1]/numReads - SHOCK)) {
-	    		dif = (sum[1]/numReads - SHOCK) - val1;
-	    		printf("Shock on X- axis = %.2fg\n", (float)dif/G);
-	    		sum[1] -= val1;
-	    		sum[1] += sum[1]/numReads;
-	    	}
-	    	else {
-	    		printf("X: no shock\n");
+	    	if (mode == 1) {
+		    	printf("Calibrating...\n\n");
+		    	
+		     	if (val[0] < THRESHOLD && val[1] < THRESHOLD) {
+		    		printf("X axis OK\n");
+		    	}
+		    	if (val[0] > THRESHOLD) {
+				printf("Turn right X potentiometer\n");
+			}
+		    	if (val[1] > THRESHOLD) {
+		    		printf("Turn left X potentiometer\n");
+		    	}
+		    	
+		    	if (val[2] < THRESHOLD && val[3] < THRESHOLD) {
+		    		printf("Y axis OK\n");
+		    	}
+		    	if (val[2] > THRESHOLD) {
+				printf("Turn right Y potentiometer\n");
+			}
+		    	if (val[3] > THRESHOLD) {
+		    		printf("Turn left Y potentiometer\n");
+		    	}
+		    	
+		    	if (val[4] < THRESHOLD && val[5] < THRESHOLD) {
+		    		printf("Z axis OK\n");
+		    	}
+		    	if (val[4] > THRESHOLD) {
+				printf("Turn right Z potentiometer\n");
+			}
+		    	if (val[5] > THRESHOLD) {
+		    		printf("Turn left Z potentiometer\n");
+		    	}
 	    	}
 	    	
-	    	
-	    	if ((val2 > sum[2]/numReads + SHOCK)) {
-	    		dif = val2 - (sum[2]/numReads + SHOCK);
-	    		printf("Shock on Y+ axis = %.2fg\n", (float)dif/G);
-	    		sum[2] -= val2;
-	    		sum[2] += sum[2]/numReads;
-	    	}
-		else if ((val2 < sum[2]/numReads - SHOCK)) {
-			dif = (sum[2]/numReads - SHOCK) - val2;
-	    		printf("Shock on Y+ axis = %.2fg\n", (float)dif/G);
-	    		sum[2] -= val2;
-	    		sum[2] += sum[2]/numReads;
-	    	}
-	    	else if ((val3 > sum[3]/numReads + SHOCK)) {
-	    		dif = val3 - (sum[3]/numReads + SHOCK);
-	    		printf("Shock on Y- axis = %.2fg\n", (float)dif/G);
-	    		sum[3] -= val3;
-	    		sum[3] += sum[3]/numReads;
-	    	}
-	    	else if ((val3 < sum[3]/numReads - SHOCK)) {
-	    		dif = (sum[3]/numReads - SHOCK) - val3;
-	    		printf("Shock on Y- axis = %.2fg\n", (float)dif/G);
-	    		sum[3] -= val3;
-	    		sum[3] += sum[3]/numReads;
-	    	}
-	    	else {
-	    		printf("Y: no shock\n");
-	    	}
-	    	
-	
-	    	if ((val4 > sum[4]/numReads + SHOCK) ) {
-	    		dif = val4 - (sum[4]/numReads + SHOCK);
-	    		printf("Shock on Z+ axis = %.2fg\n", (float)dif/G);
-	    		sum[4] -= val4;
-	    		sum[4] += sum[4]/numReads;
-	    	}
-	    	else if ((val4 < sum[4]/numReads - SHOCK)) {
-	    		dif = (sum[4]/numReads - SHOCK) - val4;
-	    		printf("Shock on Z- axis = %.2fg\n", (float)dif/G);
-	    		sum[4] -= val4;
-	    		sum[4] += sum[4]/numReads;
-	    	}
-	    	else if ((val5 > sum[5]/numReads + SHOCK)) {
-	    		dif = val5 - (sum[5]/numReads + SHOCK);
-	    		printf("Shock on Z- axis = %.2fg\n", (float)dif/G);
-	    		sum[5] -= val5;
-	    		sum[5] += sum[5]/numReads;
-	    	}
-	    	else if ((val5 < sum[5]/numReads - SHOCK)) {
-	    		dif = (sum[5]/numReads - SHOCK) - val5;
-	    		printf("Shock on Z- axis = %.2fg\n", (float)dif/G);
-	    		sum[5] -= val5;
-	    		sum[5] += sum[5]/numReads;
-	    	}
-	    	else {
-	    		printf("Z: no shock\n");
+	    	if (mode == 2) {
+	    		for (int j = 0; j < 6; j++) {
+	    			avg[j] += val[j];
+	    			avg[j] /= 2;
+	    		}
+		    	
+		    	int dif;
+		    	
+		    	if ((val[0] > avg[0] + SHOCK)) {
+		    		dif = val[0] - (avg[0] + SHOCK);
+		    		printf("Shock on X+ axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[0] < avg[0] - SHOCK)) {
+		    		dif = (avg[0] - SHOCK) - val[0];
+		    		printf("Shock on X+ axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[1] > avg[1] + SHOCK)) {
+		    		dif = val[1] - (avg[1] + SHOCK);
+		    		printf("Shock on X- axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[1] < avg[1] - SHOCK)) {
+		    		dif = (avg[1] - SHOCK) - val[1];
+		    		printf("Shock on X- axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else {
+		    		printf("X: no shock\n");
+		    	}
+		    	
+		    	
+		    	if ((val[2] > avg[2] + SHOCK)) {
+		    		dif = val[2] - (avg[2] + SHOCK);
+		    		printf("Shock on Y+ axis = %.2fg\n", (float)dif/G);
+		    	}
+			else if ((val[2] < avg[2] - SHOCK)) {
+				dif = (avg[2] - SHOCK) - val[2];
+		    		printf("Shock on Y+ axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[3] > avg[3] + SHOCK)) {
+		    		dif = val[3] - (avg[3] + SHOCK);
+		    		printf("Shock on Y- axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[3] < avg[3] - SHOCK)) {
+		    		dif = (avg[3] - SHOCK) - val[3];
+		    		printf("Shock on Y- axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else {
+		    		printf("Y: no shock\n");
+		    	}
+		    	
+		
+		    	if ((val[4] > avg[4] + SHOCK) ) {
+		    		dif = val[4] - (avg[4] + SHOCK);
+		    		printf("Shock on Z+ axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[4] < avg[4] - SHOCK)) {
+		    		dif = (avg[4] - SHOCK) - val[4];
+		    		printf("Shock on Z+ axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[5] > avg[5] + SHOCK)) {
+		    		dif = val[5] - (avg[5] + SHOCK);
+		    		printf("Shock on Z- axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else if ((val[5] < avg[5] - SHOCK)) {
+		    		dif = (avg[5] - SHOCK) - val[5];
+		    		printf("Shock on Z- axis = %.2fg\n", (float)dif/G);
+		    	}
+		    	else {
+		    		printf("Z: no shock\n");
+		    	}
 	    	}
 	    	
 	    	printf("\n\n");	    	
@@ -211,8 +172,5 @@ int main() {
     	}
 
         iio_context_destroy(ctx);
-
-
-
 	return 0;
 }
