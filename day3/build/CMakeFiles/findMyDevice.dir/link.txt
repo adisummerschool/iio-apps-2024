@@ -1,0 +1,1 @@
+/usr/bin/cc -fPIC -shared -Wl,-soname,libfindMyDevice.so -o libfindMyDevice.so CMakeFiles/findMyDevice.dir/findDev.c.o

@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/FPGAtempHandler.dir/main.c.o -o FPGAtempHandler  -Wl,-rpath,/home/analog/workspace/practica/iio-apps-2024/day3/build libfindMyDevice.so -liio
