@@ -69,28 +69,28 @@ include CMakeFiles/nume.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/nume.dir/flags.make
 
-CMakeFiles/nume.dir/main.c.o: CMakeFiles/nume.dir/flags.make
-CMakeFiles/nume.dir/main.c.o: /home/analog/workspace/practica/iio-apps-2024/day4/main.c
-CMakeFiles/nume.dir/main.c.o: CMakeFiles/nume.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/analog/workspace/practica/iio-apps-2024/day4/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/nume.dir/main.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/nume.dir/main.c.o -MF CMakeFiles/nume.dir/main.c.o.d -o CMakeFiles/nume.dir/main.c.o -c /home/analog/workspace/practica/iio-apps-2024/day4/main.c
+CMakeFiles/nume.dir/shock.c.o: CMakeFiles/nume.dir/flags.make
+CMakeFiles/nume.dir/shock.c.o: /home/analog/workspace/practica/iio-apps-2024/day4/shock.c
+CMakeFiles/nume.dir/shock.c.o: CMakeFiles/nume.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/analog/workspace/practica/iio-apps-2024/day4/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/nume.dir/shock.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/nume.dir/shock.c.o -MF CMakeFiles/nume.dir/shock.c.o.d -o CMakeFiles/nume.dir/shock.c.o -c /home/analog/workspace/practica/iio-apps-2024/day4/shock.c
 
-CMakeFiles/nume.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/nume.dir/main.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/analog/workspace/practica/iio-apps-2024/day4/main.c > CMakeFiles/nume.dir/main.c.i
+CMakeFiles/nume.dir/shock.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/nume.dir/shock.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/analog/workspace/practica/iio-apps-2024/day4/shock.c > CMakeFiles/nume.dir/shock.c.i
 
-CMakeFiles/nume.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/nume.dir/main.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/analog/workspace/practica/iio-apps-2024/day4/main.c -o CMakeFiles/nume.dir/main.c.s
+CMakeFiles/nume.dir/shock.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/nume.dir/shock.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/analog/workspace/practica/iio-apps-2024/day4/shock.c -o CMakeFiles/nume.dir/shock.c.s
 
 # Object files for target nume
 nume_OBJECTS = \
-"CMakeFiles/nume.dir/main.c.o"
+"CMakeFiles/nume.dir/shock.c.o"
 
 # External object files for target nume
 nume_EXTERNAL_OBJECTS =
 
-nume: CMakeFiles/nume.dir/main.c.o
+nume: CMakeFiles/nume.dir/shock.c.o
 nume: CMakeFiles/nume.dir/build.make
 nume: CMakeFiles/nume.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/analog/workspace/practica/iio-apps-2024/day4/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable nume"

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/nume.dir/main.c.o"
-  "CMakeFiles/nume.dir/main.c.o.d"
+  "CMakeFiles/nume.dir/shock.c.o"
+  "CMakeFiles/nume.dir/shock.c.o.d"
   "nume"
   "nume.pdb"
 )

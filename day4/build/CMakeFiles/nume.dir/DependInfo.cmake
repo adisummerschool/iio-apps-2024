@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/analog/workspace/practica/iio-apps-2024/day4/main.c" "CMakeFiles/nume.dir/main.c.o" "gcc" "CMakeFiles/nume.dir/main.c.o.d"
+  "/home/analog/workspace/practica/iio-apps-2024/day4/shock.c" "CMakeFiles/nume.dir/shock.c.o" "gcc" "CMakeFiles/nume.dir/shock.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

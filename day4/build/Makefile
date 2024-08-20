@@ -129,29 +129,29 @@ nume/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/build
 .PHONY : nume/fast
 
-main.o: main.c.o
-.PHONY : main.o
+shock.o: shock.c.o
+.PHONY : shock.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/main.c.o
-.PHONY : main.c.o
+shock.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/shock.c.o
+.PHONY : shock.c.o
 
-main.i: main.c.i
-.PHONY : main.i
+shock.i: shock.c.i
+.PHONY : shock.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/main.c.i
-.PHONY : main.c.i
+shock.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/shock.c.i
+.PHONY : shock.c.i
 
-main.s: main.c.s
-.PHONY : main.s
+shock.s: shock.c.s
+.PHONY : shock.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/main.c.s
-.PHONY : main.c.s
+shock.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/nume.dir/build.make CMakeFiles/nume.dir/shock.c.s
+.PHONY : shock.c.s
 
 # Help Target
 help:
@@ -162,9 +162,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... nume"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... shock.o"
+	@echo "... shock.i"
+	@echo "... shock.s"
 .PHONY : help
 
 

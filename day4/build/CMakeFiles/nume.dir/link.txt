@@ -1,1 +1,1 @@
-/usr/bin/cc CMakeFiles/nume.dir/main.c.o -o nume  -liio
+/usr/bin/cc CMakeFiles/nume.dir/shock.c.o -o nume  -liio
