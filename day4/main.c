@@ -50,14 +50,22 @@ int main(void){
             const char *channel_name = iio_channel_get_id(iio_channel_);
             ssize_t dev_attr = iio_channel_attr_read(iio_channel_, "raw" , dst[i], sizeof(dst));
 
-            int chn0_raw=atoi(dst[i]);
-            double chn0_voltage = chn0_raw * volts_per_lsb;
-            printf("VOLTAGE on channel %d IS %.4f [V]\n\n",i, chn0_voltage);
+            int chn_raw=atoi(dst[i]);
+            double chn_voltage = chn_raw * volts_per_lsb;
+            double chn_g=chn_voltage/oneg;
+            printf("VOLTAGE on channel %d IS %.4f [V], and %.4f [G]\n\n",i, chn_voltage, chn_g);
             
             //printf("%s : %s\n", channel_name, dst[i]);
         }
         printf("\n");
         sleep(3);
+
+        
+       // int key = getch();
+       // if(key=='T' || key=='t')
+        //    break;
+
+
         //calibrare
         /*if(atoi(dst[0])>threshold)
             printf("X turn right\n");
@@ -84,7 +92,7 @@ int main(void){
         printf("\033[A");
         printf("\033[K");*/
         //sleep(1);
-        if(time(NULL)-time_shock>=1)
+       /* if(time(NULL)-time_shock>=1)
         {
             if(abs(atoi(dst[0])-atoi(dst_prev[0])) > shockthreshold)
             {
@@ -132,6 +140,7 @@ int main(void){
         if(shock)
             time_shock=time(NULL);
         shock=false;
+        */
     }
     return 0;
 }
