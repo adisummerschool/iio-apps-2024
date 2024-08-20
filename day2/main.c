@@ -31,7 +31,7 @@ int main()
         printf("nume:%s , val: %s\n\n", name, value);
     }
 
-    char dev_name[]="iio-ad5592r-s";
+    char dev_name[]="ad5592r-s";
     struct iio_device *dev= iio_context_find_device (ctx,dev_name);
     if(!dev){
         perror("cannot get device");
