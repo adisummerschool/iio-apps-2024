@@ -4,7 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 #define URI                     "ip:10.76.84.253"
-#define URI 					"ip:10.76.84.253"
 #define DEVICE_NAME 			"ad5592rs"
 #define ATTR_NAME				"raw"
 #define EN 						"en"
