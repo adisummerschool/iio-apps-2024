@@ -1,6 +1,7 @@
 #include "findDev.h"
 #include <iio.h>
 #include <string.h>
+struct iio_context *ctx,*FPGActx;
 char* intToChar(int x)
 {
 	int nr=0,aux=x,*vec = calloc(100,sizeof(int)),neg=0;
@@ -55,15 +56,13 @@ int checkCtx(struct iio_context *ctx1,struct iio_context *ctx2)
 }
 struct iio_device* findMyDevice(char *nameOfDevice)
 {
-	struct iio_context *ctx;
-	ctx = iio_create_context_from_uri(URI);
-	
+
 	if(!ctx)
 	{
 		printf("%s\n","Cannot get context");
 		return NULL;
 	}
-	
+
 	int ctx_dev = iio_context_get_devices_count(ctx);
 	printf("Getting all devices...\n");
 	
@@ -78,20 +77,19 @@ struct iio_device* findMyDevice(char *nameOfDevice)
 		if(strcmp(nameOfDevice,name) == 0)
 		{
 			printf("%s was found! The id of the device is : %s\n",name,id);
+			
 			return device;
 		}
 		//else printf("Still looking...\n");
 	}
 	printf("Did not find device\n");
+
 	return NULL;
 }
 struct iio_channel* findChannel(char *nameOfChann,struct iio_device* device)
 {
 	
-	struct iio_context *ctx = iio_device_get_context(device);
-	struct iio_context *FPGActx = iio_create_context_from_uri(URI);
-	printf("Looking for context...\n");
-	if(!checkCtx(ctx,FPGActx))
+	if(!ctx)
 	{
 		printf("Invalid device!\n");
 		return NULL;
@@ -125,8 +123,8 @@ struct iio_channel* findChannel(char *nameOfChann,struct iio_device* device)
 
 int findChannelAttr(char *nameOfChannAttr,struct iio_channel* chan)
 {
-	struct iio_context *ctx = iio_device_get_context(iio_channel_get_device(chan));
-	struct iio_context *FPGActx = iio_create_context_from_uri(URI);
+	ctx = iio_device_get_context(iio_channel_get_device(chan));
+	FPGActx = iio_create_context_from_uri(URI);
 	//printf("Looking for context...\n");
 	if(!checkCtx(ctx,FPGActx))
 	{
@@ -169,10 +167,10 @@ char* readWriteChannAttr(char *nameOfChannAttr,struct iio_channel* chan,int mode
 {
 
 	char* value = calloc(100, sizeof(char));
-	if(findChannelAttr(nameOfChannAttr,chan) <= 0 )
+	/*if(findChannelAttr(nameOfChannAttr,chan) <= 0 )
 	{
 		return NULL;
-	}
+	}*/
 
 	if(mode)
 	{
@@ -206,7 +204,17 @@ char* readWriteChannAttr(char *nameOfChannAttr,struct iio_channel* chan,int mode
 		return NULL;
 	}
 }
-
+struct iio_context* initCtx()
+{
+	ctx = iio_create_context_from_uri(URI);
+	
+	if(!ctx)
+	{
+		printf("%s\n","Cannot get context");
+		return NULL;
+	}
+	return ctx;
+}
 char* readDevAttr(char *nameOfDevAttr,struct iio_device* device)
 {
 	return readWriteDevAttr(nameOfDevAttr,device,0,"0");
@@ -219,10 +227,8 @@ char* writeDevAttr(char *nameOfDevAttr,struct iio_device* device,char* src)
 
 char* readWriteDevAttr(char *nameOfDevAttr,struct iio_device* device,int mode,char* src)
 {
-	struct iio_context *ctx = iio_device_get_context(device);
-	struct iio_context *FPGActx = iio_create_context_from_uri(URI);
-	//printf("Looking for context...\n");
-	if(!checkCtx(ctx,FPGActx))
+	
+	if(!ctx)
 	{
 		printf("Invalid device!\n");
 		return NULL;

@@ -13,6 +13,18 @@
 #include <fcntl.h>
 
 #define THRESHOLD 500
+#define SAMPLE 10
+
+
+struct buffer_elem
+{
+	uint16_t xpoz;
+	uint16_t xneg;
+	uint16_t ypoz;
+	uint16_t yneg;
+	uint16_t zpoz;
+	uint16_t zneg;					
+};
 struct valList
 {
 	int val;
@@ -105,7 +117,7 @@ int main()
 
 	
 	
-	
+	initCtx();
 	struct iio_device* ad5592rs = findMyDevice("ad5592r_s");
 	struct iio_device* xadc = findMyDevice("xadc");
 	struct iio_device* axi_pwm_led = findMyDevice("axi-pwm-led");
@@ -119,12 +131,51 @@ int main()
 		return -1;
 	}
 		
+	writeDevAttr("en",ad5592rs,"1");
+	
 	adcInput0 = findChannel("voltage0",ad5592rs);
+	iio_channel_enable(adcInput0);
 	adcInput1 = findChannel("voltage1",ad5592rs);
+	iio_channel_enable(adcInput1);
 	adcInput2 = findChannel("voltage2",ad5592rs);
+	iio_channel_enable(adcInput2);
 	adcInput3 = findChannel("voltage3",ad5592rs);
+	iio_channel_enable(adcInput3);
 	adcInput4 = findChannel("voltage4",ad5592rs);
+	iio_channel_enable(adcInput4);
 	adcInput5 = findChannel("voltage5",ad5592rs);
+	iio_channel_enable(adcInput5);
+	
+	struct iio_buffer *buf;
+	buf = iio_device_create_buffer(ad5592rs,SAMPLE,false);
+	
+	if(!buf)
+	{
+		printf("cannot get buffer \n");
+		return -1;
+	}
+	
+	int bytes_read = iio_buffer_refill(buf);
+	uint16_t values[6];
+	//buffer_elem bu
+	
+	for(void *ptr = iio_buffer_start(buf); ptr < iio_buffer_end(buf); ptr += iio_buffer_step(buf))
+	{
+		uint16_t xpoz = *(uint16_t *)(ptr + 0*sizeof(uint16_t));
+		uint16_t xneg = *(uint16_t *)(ptr + 1*sizeof(uint16_t));
+		uint16_t ypoz = *(uint16_t *)(ptr + 2*sizeof(uint16_t));
+		uint16_t yneg = *(uint16_t *)(ptr + 3*sizeof(uint16_t));
+		uint16_t zpoz = *(uint16_t *)(ptr + 4*sizeof(uint16_t));
+		uint16_t zneg = *(uint16_t *)(ptr + 5*sizeof(uint16_t));
+		printf("xpoz=%d ",xpoz);
+		printf("xneg=%d ",xneg);
+		printf("ypoz=%d ",ypoz);
+		printf("yneg=%d ",yneg);
+		printf("zpoz=%d ",zpoz);
+		printf("zneg=%d ",zneg);										
+	}
+	
+	iio_buffer_destroy(buf);
 	
 	pwmLed0 = findChannel("count0",axi_pwm_led);
 	pwmLed1 = findChannel("count1",axi_pwm_led);
@@ -134,7 +185,7 @@ int main()
 	
 	printf("GOT ALL CHANNELS\n");
 	
-	writeDevAttr("en",ad5592rs,"1");
+
 	//writeChannAttr("raw",adcInput0,"255");
 	
 	/*char* offset = readChannAttr("offset",temp);
