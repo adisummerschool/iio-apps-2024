@@ -64,9 +64,8 @@ while True:
     plt.clf()
 
 
-
-
 functii.functia_florina()
 
 #source .venv/bin/activate
 #python3 plot.py
+
