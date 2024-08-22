@@ -1,12 +1,16 @@
 import math
 from threading import Event, Thread
 from queue import Queue
-from time import sleep
+from time import sleep, time
 from pynput import keyboard
 import iio 
 
 URI = "ip:10.76.84.236"
 DEV_NAME = "ad5592r_s"
+ATTR_NAME = "raw"
+THRESHOLD = 5
+MAX_DEG = 45
+PWM_TIMEOUT = 0.1
 
 def frontend_thread_func(movement):
     pass
@@ -39,8 +43,7 @@ def get_data(dev):
             print("cannot get channel")
         else:
             channels.append(channel)
-        values.append(channel.attrs['raw'].value)
-        print("{0} {1}".format(channel.id, values[i]))
+        values.append(channel.attrs[ATTR_NAME].value)
 
     data['x']['+'] = values[0]
     data['x']['-'] = values[1]
@@ -49,7 +52,7 @@ def get_data(dev):
     data['z']['+'] = values[4]
     data['z']['-'] = values[5]
 
-    print(data)
+#    print(data)
 
     return data
 
@@ -60,32 +63,88 @@ def get_roll_pitch(data):
     y_accel = float(data['y']['+']) - float(data['y']['-'])
     z_accel = float(data['z']['+']) - float(data['z']['-'])
 
-    roll = math.atan2(y_accel, z_accel) * 180 / math.pi
-    pitch = math.atan2(-x_accel, math.sqrt(y_accel ** 2 + z_accel ** 2)) * 180 / math.pi
+    roll = 180 * math.atan2(y_accel, math.sqrt(x_accel*x_accel + z_accel*z_accel)) / math.pi
+    pitch = 180 * math.atan2(x_accel, math.sqrt(y_accel*y_accel + z_accel*z_accel)) / math.pi
+
     return roll, pitch
 
 
 def get_movement(roll, pitch):
-    pass
+    movement = {'left': 0, 'right': 0, 'front': 0, 'back': 0}
+    
+    roll_percentage = roll / MAX_DEG
+    if abs(roll_percentage) > 1: 
+        if roll_percentage > 0:
+            roll_percentage = 1
+        elif roll_percentage < 0:
+            roll_percentage = -1
 
+
+    pitch_percentage = pitch / MAX_DEG
+    if abs(pitch_percentage) > 1: 
+        if pitch_percentage > 0:
+            pitch_percentage = 1
+        elif pitch_percentage < 0:
+            pitch_percentage = -1
+
+    if abs(roll_percentage) >= (THRESHOLD / MAX_DEG):
+        if roll_percentage < 0:
+            movement['left'] = -1 * roll_percentage
+            movement['right'] = 0
+        else:
+            movement['left'] = 0
+            movement['right'] = roll_percentage 
+
+    if abs(pitch_percentage) >= (THRESHOLD / MAX_DEG) :
+        if pitch_percentage < 0:
+            movement['front'] = -1 * pitch_percentage
+            movement['back'] = 0
+        else:
+            movement['front'] = 0
+            movement['back'] = pitch_percentage 
+
+    # print("roll: ", "{:.2f}".format(roll), "=", "{:.2f}".format(roll_percentage), "/ 1") 
+    # print("pitch: ", "{:.2f}".format(pitch), "=", "{:.2f}".format(pitch_percentage), "/ 1") 
+    # print("\nleft: ", "{:.2f}".format(movement['left']), "right: ", "{:.2f}".format(movement['right']))
+    # print("front: ", "{:.2f}".format(movement['front']), "back: ", "{:.2f}".format(movement['back']))
+    # print("---------------------------------")
+    return movement
+
+
+def key_pressed(key, time):
+    controller = keyboard.Controller()
+
+    controller.press(key)
+    sleep(time)
+    controller.release(key)
+# 
 
 def start_iio(device):
+    start = time()
     data = get_data(device)
     roll, pitch = get_roll_pitch(data)
-   # movement = get_movement(roll, pitch)
-    print("roll: ", roll)
-    print("pitch: ", pitch)
-    #print(roll, pitch)
-    # simulation loop
+    movement = get_movement(roll, pitch)
+    iio_timeout = time() - start
+    
+    on_time = -1
+    for move, key in [('front', 'w'), ('back', 's'), ('left', 'a'), ('right', 'd')]:
+        value = movement[move]
+        if value > 0: 
+            on_time = PWM_TIMEOUT * value
+            key_thread = Thread(target=key_pressed, args=(key, on_time,), daemon=True)
+            key_thread.start()
+
+    if on_time != -1: 
+        sleep(PWM_TIMEOUT)#- iio_timeout)
+
+    return movement
 
 
 def backend_thread_func(movement):
     dev = init_device()
-    
     while not exit_event.is_set():
         if start_event.is_set():
-            #print("running...")
-            sleep(1)
+            #sleep(1)
             movement.put(start_iio(dev))
         start_event.wait()
         
@@ -129,5 +188,5 @@ if __name__ == '__main__':
     listener.start() 
 
     listener.join()
-    # frontend_thread.join()
-    # backend_thread.join() 
+    frontend_thread.join()
+    backend_thread.join() 
