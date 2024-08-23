@@ -5,14 +5,49 @@ from pynput import keyboard
 import iio
 from time import sleep, time
 import math
+import tkinter as tk
 
 URI = "ip:10.76.84.243"
 DEVICE = "iio:device0"
+ 
+PWM_TIMEOUT = 0.2
 
-PWM_TIMEOUT = 0.4
+def update_square(canvas, square, time):
+    intensity = 255 - max(min(int(time * 255), 255), 0)
 
-def frontend_thread(movement):
-    pass
+    hex_intensity = hex(intensity)                                              # convert int to hex
+    string_color = hex_intensity.split("x", 1)
+    if intensity < 16:                                                          # make the color
+        color = '#' + '0' + string_color[1] + '0' + string_color[1]  + 'ff'
+    else:
+        color = '#' + string_color[1] + string_color[1]  + 'ff'              
+    #print(color)
+    canvas.itemconfig(square, fill=color)
+
+def frontend_thread_func(movement):
+    def update_gui():
+        movements = movement.get()
+        update_square(canvas, squares['left'], movements['left'])
+        update_square(canvas, squares['right'], movements['right'])
+        update_square(canvas, squares['front'], movements['front'])
+        update_square(canvas, squares['back'], movements['back'])
+
+        root.after(int( PWM_TIMEOUT * 1000), update_gui)
+
+    root = tk.Tk()
+    canvas = tk.Canvas(root, width=400, height=400, background='#808080')
+    canvas.pack()
+    
+    sq_size = 100
+    squares = {
+        'left': canvas.create_rectangle(50, 150, 50 + sq_size, 150 + sq_size, fill='white'),
+        'right': canvas.create_rectangle(250, 150, 250 + sq_size, 150 + sq_size, fill='white'),
+        'front': canvas.create_rectangle(150, 50, 150 + sq_size, 50 + sq_size, fill='white'),
+        'back': canvas.create_rectangle(150, 250, 150 + sq_size, 250 + sq_size, fill='white'),
+    }
+
+    update_gui()
+    root.mainloop()
 
 def init_device():
     ctx = iio.Context(URI)
@@ -116,6 +151,7 @@ def start_iio(device):
     iio_timeout = time() - start
     #simulation loop
 
+    on_time = -1
     for move, key in [('front', 'w'), ('back', 's'), ('left', 'a'),('right', 'd')]:
         value = movement[move]
         if value > 0:
@@ -125,7 +161,7 @@ def start_iio(device):
             thread.start()
 
     if on_time != -1:
-        sleep(PWM_TIMEOUT - iio_timeout)
+        sleep(max(PWM_TIMEOUT - iio_timeout, 0))
 
     return movement
 
@@ -143,7 +179,7 @@ def backend_thread_func(movement):
 
 def on_keypress(key):
 
-    if key == keyboard.Key.ctrl:
+    if key == keyboard.Key.ctrl_l:
         if start_event.is_set():
             start_event.clear()
             print("pause")
@@ -166,7 +202,7 @@ if __name__ == '__main__':
     movement_queue = Queue()
     movement_queue.put(init_momevent)
 
-    frontend_thread = Thread(target=frontend_thread, args=(movement_queue,))
+    frontend_thread = Thread(target=frontend_thread_func, args=(movement_queue,))
     frontend_thread.daemon = True
     frontend_thread.start()
 
@@ -179,5 +215,5 @@ if __name__ == '__main__':
     listener.start()
 
     listener.join()
-    backend_thread.join()
-    frontend_thread.join()
+    #backend_thread.join()
+    #frontend_thread.join()
