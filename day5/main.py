@@ -4,6 +4,7 @@ import math
 from pynput import keyboard
 from threading import Event, Thread
 from queue import Queue
+import tkinter as tk
 
 DEVICE_NAME = "ad5592r_s"
 URI = "ip:10.76.84.104"
@@ -17,14 +18,13 @@ def init_device():
 
     if not ctx:
         print("Cannot find context")
- 
+
     dev = ctx.find_device(DEVICE_NAME)
     if not dev:
         print("Cannot find device")
 
     dev._device.enabled = True
     return dev
-   
 
 #data acquisition
 def get_data(dev):
@@ -137,12 +137,51 @@ def start_iio(dev):
             sleep(fin)
 
     return movement
-  
+
+def update_square(canvas, square, time):
+    intensity = 255 - int(time * 255)
+    blue = 248
+
+    generic = '#' + 2 * f'{intensity:02x}'
+    color = generic + f'{blue:x}'
+    canvas.itemconfig(square, fill=color)
 
 
 #GUI thread
 def frontend_thread_func(movement):
-    pass
+    #functie interna, va putea accesa tot ce e accesibil mai departe in functia parinte
+    #nu mai are nevoie de parametri
+    def update_gui():
+        #acces la ultimele date din dictionar
+        movements = movement.get()
+        update_square(canvas, squares['left'], movements['left'])
+        update_square(canvas, squares['right'], movements['right'])
+        update_square(canvas, squares['front'], movements['front'])
+        update_square(canvas, squares['back'], movements['back'])
+
+        #asigura faptul ca ecranul continua sa se updateze in timpul rularii
+        root.after(int(PWM_TIMEOUT * 100), update_gui)
+
+
+    #clasa principala a GUI-ului
+    root = tk.Tk()
+    #fereastra pe care se vor desena patratele
+    canvas = tk.Canvas(root, width=400, height=400)
+    canvas.pack()
+
+    sq_size = 100
+    squares = {
+        'left': canvas.create_rectangle(50, 150, 50+sq_size, 150+sq_size, fill='white'),
+        'right': canvas.create_rectangle(250, 150, 250+sq_size, 150+sq_size, fill='white'),
+        'front': canvas.create_rectangle(150, 50, 150+sq_size, 50+sq_size, fill='white'),
+        'back': canvas.create_rectangle(150, 250, 150+sq_size, 250+sq_size, fill='white'), 
+    }
+    
+    update_gui()
+    #echivalent cu while(True), care tine GUI-ul in viata
+    root.mainloop()
+
+
 
 #movement simulation thread
 def backend_thread_func(movement):
@@ -156,7 +195,7 @@ def backend_thread_func(movement):
 
 #keypress listener
 def on_keypress(key):
-    if key == keyboard.Key.ctrl:
+    if key == keyboard.Key.ctrl_l:
         if start_event.is_set():
             start_event.clear()
             print("paused")
@@ -194,7 +233,7 @@ if __name__ == '__main__':
     listener = keyboard.Listener(on_press=on_keypress)
     listener.daemon = True
     listener.start()
-       
+
     listener.join()
-    frontend_thread.join()
+    #frontend_thread.join()
     backend_thread.join()
