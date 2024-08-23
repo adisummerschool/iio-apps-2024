@@ -7,6 +7,7 @@ import array
 from time import sleep
 import time
 import math
+import tkinter as tk
 
 
 URI                 =   "ip:10.76.84.253"
@@ -14,14 +15,54 @@ DEVICE_NAME         =   "ad5592rs"
 ATTR_NAME           =   "raw"
 EN 		            =   "en"
 THR_LOW             =   7
-THR_HIGH            =   70
-DEG                 =   63
+THR_HIGH            =   50
+DEG                 =   43
 NO_CH               =   6
-PWM_TIMEOUT         =   0.15
+PWM_TIMEOUT         =   0.2
 
 
+
+def update_square(canvas, square, time):
+    intensity = 255 - int(time * 255)
+    color = '#'
+    hexcod = hex(intensity).replace('0x', '') 
+    if (intensity < 16):
+        cod = '0'
+        cod += hexcod
+    else:
+        cod  = ''
+        cod +=  hexcod
+    color += cod
+    color += cod
+    color += 'ff'
+    canvas.itemconfig(square, fill=color)
+    
 def frontend_thread_func(movement):
-    pass
+
+    def update_gui():
+        step = movement.get()
+        update_square(canvas, squares['left'], step['left'])
+        update_square(canvas, squares['right'], step['right'])
+        update_square(canvas, squares['front'], step['front'])
+        update_square(canvas, squares['back'], step['back'])
+
+        root.after(int(PWM_TIMEOUT * 100), update_gui)
+    
+   
+    root = tk.Tk()
+    canvas = tk.Canvas(root, width=400, height=400)
+    canvas.pack()
+    
+    sq_size = 100
+    squares = {
+        'left': canvas.create_rectangle(50, 150, 50 + sq_size, 150 + sq_size, fill = 'white'),
+        'right': canvas.create_rectangle(250, 150, 250 + sq_size, 150 + sq_size, fill = 'white'),
+        'front': canvas.create_rectangle(150, 50, 150 + sq_size, 50 + sq_size, fill = 'white'),
+        'back': canvas.create_rectangle(150, 250, 150 + sq_size, 250 + sq_size,fill = 'white'),
+    }
+    update_gui()
+    root.mainloop()
+
 
 def init_device():
     #context
@@ -103,6 +144,7 @@ def get_movement(roll, pitch):
     else:
         movement['front'] = 0
         movement['back'] = 0
+    
     return movement
 
 def start_iio(cora):
@@ -133,7 +175,7 @@ def key_press(key, on_time):
     
 
 def on_keypress(key):
-    if key == keyboard.Key.ctrl:
+    if key == keyboard.Key.space:
         if start_event.is_set():
             start_event.clear()
             print("paused")
@@ -150,7 +192,7 @@ def on_keypress(key):
 
 if __name__ == '__main__':
     
-    start_event = Event()
+    start_event = Event() 
     exit_event = Event()
     
     init_movement = {'left': 0, 'right': 0, 'front': 0, 'back': 0}
@@ -164,7 +206,9 @@ if __name__ == '__main__':
     
     backend_thread = Thread(target=backend_thread_func, args=(movement_queue,))
     backend_thread.daemon = True
-    backend_thread.start()
+    backend_thread.start() 
+
+  
     
     
     listener = keyboard.Listener(on_press=on_keypress)
@@ -172,6 +216,6 @@ if __name__ == '__main__':
     listener.start()
 
     listener.join()
-    frontend_thread.join()
-    backend_thread.join() 
+    #frontend_thread.join()
+    #backend_thread.join() 
   
